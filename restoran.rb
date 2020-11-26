@@ -87,19 +87,23 @@ class Restoran
   end
 
   def cetak_nota_pesanan
-    puts '====================== NOTA PESANAN ======================'
+    puts '============================ NOTA PESANAN ============================='
     puts "customer : #{@pelanggan}"
-    puts 'No. |Item         | Harga | Qty |   Total    |'
+    puts ''
+    puts '-----------------------------------------------------------------------'
+    puts "#{'No.'.center(5)} | #{'Item'.center(16)} | #{'Harga'.center(16)} | #{'Qty'.center(5)} | #{'Total'.center(16)}|"
+    puts '-----------------------------------------------------------------------'
     @items.each do |pesanan|
-      puts "#{pesanan['no']}   | #{pesanan['nama']} | #{pesanan['harga']} |  #{pesanan['qty']}  |    #{pesanan['harga'].to_i * pesanan['qty'].to_i}    |"
+      total = pesanan['harga'].to_i * pesanan['qty'].to_i
+      puts "#{pesanan['no'].to_s.center(5)} | #{pesanan['nama'].to_s.center(16)} | #{format_rupiah(pesanan['harga']).center(16)} | #{pesanan['qty'].to_s.center(5)} | #{format_rupiah(total).center(16)}|"
     end
-    puts '=========================================================='
-    puts "Total Harga       :   #{@total_harga}"
-    puts "Total Diskon      :   #{@diskon}"
-    puts "Bayar             :   #{@pembayaran}"
+    puts '======================================================================='
+    puts "Total Harga       :   #{format_rupiah(@total_harga)}"
+    puts "Total Diskon      :   #{format_rupiah(@diskon)}"
+    puts "Bayar             :   #{format_rupiah(@pembayaran)}"
+    puts "Kembalian         :   #{format_rupiah(@kembalian)}"
     puts "Jenis Pembayaran  :   #{@jenis_pembayaran}"
-    puts "Kembalian         :   #{@kembalian}"
-    puts '=========================================================='
+    puts '======================================================================='
   end
 
   def bayar
@@ -118,11 +122,22 @@ class Restoran
     else
       puts 'Tidak valid.'
     end
-    @total_harga = @total_harga - @diskon
+    @total_harga -= @diskon
 
     @jenis_pembayaran = jenis_pembayaran == '1' ? 'Cash' : 'Credit'
     @kembalian = @pembayaran.to_i - (@total_harga - @diskon)
     cetak_nota_pesanan
+  end
+
+  def format_rupiah(number)
+    regex = /(\d)(?=(\d\d\d)+(?!\d))/
+
+    left = number.to_s.split('.')
+    left.gsub!(regex) do |digit_to_delimit|
+      "#{digit_to_delimit}."
+    end
+
+    "Rp. #{left},00"
   end
 end
 
