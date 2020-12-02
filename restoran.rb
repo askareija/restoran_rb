@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class Restoran
   def initialize
     @total_harga = 0
@@ -6,7 +8,6 @@ class Restoran
     @kembalian = 0
     @diskon = 0
     @items = []
-    @pelanggan = 'Megumi Aliya'
   end
 
   def run
@@ -17,65 +18,62 @@ class Restoran
   def pilih_menu
     daftar_menu
     print 'Pesanan : '
-    tambah_pesanan(gets.chomp)
+    pilihan = gets.chomp.to_i
+    pilihan == 6 ? exit : tambah_pesanan(pilihan)
     konfirmasi_pesanan
   end
 
   def daftar_menu
-    puts 'No  | ITEM              | HARGA     '
-    puts '1   | Nasi Goreng       | 15.0000   '
-    puts '2   | Nasi Timbel       | 17.0000   '
-    puts '3   | Nasi Bakar        | 30.0000   '
-    puts '4   | Nasi Kuning       | 15.0000   '
-    puts '5   | Nasi Uduk         | 10.0000   '
-    puts '===================================='
+    puts '==================================='
+    puts 'No  | ITEM              | HARGA    '
+    puts '1   | Nasi Goreng       | 15.000   '
+    puts '2   | Nasi Timbel       | 17.000   '
+    puts '3   | Nasi Bakar        | 30.000   '
+    puts '4   | Nasi Kuning       | 15.000   '
+    puts '5   | Nasi Uduk         | 10.000   '
+    puts '==================================='
     puts '6  Keluar'
   end
 
   def tambah_pesanan(no_menu)
+    print 'Berapa banyak? : '
+    quantity = gets.chomp.to_i
     case no_menu
-    when '1'
+    when 1
       if @items.any? { |item| item['no'] == 1 }
-        @items.find { |item| item['no'] == 1 }['qty'] += 1
+        @items.find { |item| item['no'] == 1 }['qty'] += quantity
       else
-        @items.push({ 'no' => 1, 'nama' => 'Nasi Goreng', 'harga' => 15_000, 'qty' => 1 })
+        @items.push({ 'no' => 1, 'nama' => 'Nasi Goreng', 'harga' => 15_000, 'qty' => quantity })
       end
       puts 'Nasi goreng ditambahkan'
-    when '2'
+    when 2
       if @items.any? { |item| item['no'] == 2 }
-        @items.find { |item| item['no'] == 2 }['qty'] += 1
+        @items.find { |item| item['no'] == 2 }['qty'] += quantity
       else
-        @items.push({ 'no' => 2, 'nama' => 'Nasi Timbel', 'harga' => 17_000, 'qty' => 1 })
+        @items.push({ 'no' => 2, 'nama' => 'Nasi Timbel', 'harga' => 17_000, 'qty' => quantity })
       end
       puts 'Nasi Timbel ditambahkan'
-    when '3'
+    when 3
       if @items.any? { |item| item['no'] == 3 }
-        @items.find { |item| item['no'] == 3 }['qty'] += 1
+        @items.find { |item| item['no'] == 3 }['qty'] += quantity
       else
-        @items.push({ 'no' => 3, 'nama' => 'Nasi Bakar', 'harga' => 30_000, 'qty' => 1 })
+        @items.push({ 'no' => 3, 'nama' => 'Nasi Bakar', 'harga' => 30_000, 'qty' => quantity })
       end
       puts 'Nasi Bakar ditambahkan'
-    when '4'
+    when 4
       if @items.any? { |item| item['no'] == 4 }
-        @items.find { |item| item['no'] == 4 }['qty'] += 1
+        @items.find { |item| item['no'] == 4 }['qty'] += quantity
       else
-        @items.push({ 'no' => 4, 'nama' => 'Nasi Kuning', 'harga' => 15_000, 'qty' => 1 })
+        @items.push({ 'no' => 4, 'nama' => 'Nasi Kuning', 'harga' => 15_000, 'qty' => quantity })
       end
       puts 'Nasi Kuning ditambahkan'
-    when '5'
+    when 5
       if @items.any? { |item| item['no'] == 5 }
-        @items.find { |item| item['no'] == 5 }['qty'] += 1
+        @items.find { |item| item['no'] == 5 }['qty'] += quantity
       else
-        @items.push({ 'no' => 5, 'nama' => 'Nasi Uduk', 'harga' => 10_000, 'qty' => 1 })
+        @items.push({ 'no' => 5, 'nama' => 'Nasi Uduk', 'harga' => 10_000, 'qty' => quantity })
       end
       puts 'Nasi Uduk ditambahkan'
-    when '6'
-      if @items.any? { |item| item['no'] == 6 }
-        @items.find { |item| item['no'] == 6 }['qty'] += 1
-      else
-        @items.push({ 'no' => 6, 'nama' => 'Nasi Timbel', 'harga' => 17_000, 'qty' => 1 })
-      end
-      puts 'Nasi Timbel ditambahkan'
     else
       puts 'Menu tidak valid.'
     end
@@ -125,14 +123,14 @@ class Restoran
     @total_harga -= @diskon
 
     @jenis_pembayaran = jenis_pembayaran == '1' ? 'Cash' : 'Credit'
-    @kembalian = @pembayaran.to_i - (@total_harga - @diskon)
+    @kembalian = @pembayaran.to_i - @total_harga
     cetak_nota_pesanan
   end
 
   def format_rupiah(number)
     regex = /(\d)(?=(\d\d\d)+(?!\d))/
 
-    left = number.to_s.split('.')
+    left = number.to_i.to_s
     left.gsub!(regex) do |digit_to_delimit|
       "#{digit_to_delimit}."
     end
